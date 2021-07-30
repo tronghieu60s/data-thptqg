@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const tienPhong = require("./utils/tienphong.vn");
+const tienPhong = require("./src/crawlers/tienphong.vn");
 
 const browserConfig = {
   headless: false,
