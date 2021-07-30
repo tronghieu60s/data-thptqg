@@ -1,7 +1,7 @@
 const { isObjectEmpty } = require("../helpers/commonFunctions");
 
 const crawlerUrl = "https://tienphong.vn/tra-cuu-diem-thi.tpo";
-const timeout = 5000; // timeout milliseconds
+const timeout = 3000; // timeout milliseconds
 const minFrontIdf = 1;
 const maxFrontIdf = 64; // total provinces and cities
 
@@ -21,6 +21,8 @@ const main = async (browser) => {
     const resultData = await getData(page, idfNum);
     if (!isObjectEmpty(resultData)) {
       console.log(resultData.idfNum + " - " + resultData.literature);
+    } else {
+      
     }
     if (rearNumber === 100) {
       break;
@@ -30,6 +32,7 @@ const main = async (browser) => {
 };
 
 const getData = async (page, idfNum) => {
+  /* fill identification number on input and click the button  */
   await page.evaluate(
     (args) => {
       document.querySelector("#txtkeyword").value = args.idfNum;
@@ -38,12 +41,14 @@ const getData = async (page, idfNum) => {
     { idfNum }
   );
 
-  await page.waitForSelector("#resultcontainer .point", { timeout });
+  await page.waitForSelector("#resultcontainer .point");
 
-  await page.waitForFunction(
-    `document.querySelector("#resultcontainer .point:nth-child(2)").innerText === ${idfNum}`,
-    { timeout }
-  );
+  /* wait function run and find elements includes identification number */
+  const waitFunc = `document.querySelector("#resultcontainer .point:nth-child(2)")
+  .innerText.includes("${idfNum}")`;
+  await page
+    .waitForFunction(waitFunc, { timeout })
+    .catch(() => console.log(`${idfNum} not found!`));
 
   const resultData = await page.evaluate(() => {
     const result = document.querySelectorAll("#resultcontainer .point");
