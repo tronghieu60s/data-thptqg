@@ -1,32 +1,51 @@
 const { isObjectEmpty } = require("../helpers/commonFunctions");
+const { getIdfNumber } = require("../helpers/crawlersFunctions");
 
 const crawlerUrl = "https://tienphong.vn/tra-cuu-diem-thi.tpo";
 const timeout = 3000; // timeout milliseconds
+const timeoutPerReq = 500;
 const minFrontIdf = 1;
 const maxFrontIdf = 64; // total provinces and cities
+const maxTimesOverData = 5;
 
 const main = async (browser) => {
   const page = await browser.newPage();
+
+  // // network speed simulator: 
+  // // https://fdalvi.github.io/blog/2018-02-05-puppeteer-network-throttle/
+  // await (
+  //   await page.target().createCDPSession()
+  // ).send("Network.emulateNetworkConditions", {
+  //   offline: false,
+  //   downloadThroughput: (1.5 * 1024 * 1024) / 8,
+  //   uploadThroughput: (750 * 1024) / 8,
+  //   latency: 40,
+  // });
+
   await page.goto(crawlerUrl);
   await page.setViewport({ width: 1366, height: 768 });
 
+  /* max rearNumber 101288 when frontNumber = 1 
+    => infNum = 01101288 */
   let frontNumber = minFrontIdf,
-    rearNumber = 1;
+    rearNumber = 101250;
+  let timesOverData = 0;
 
   while (frontNumber <= maxFrontIdf) {
-    const frontIdfNum = ("00" + frontNumber).slice(-2);
-    const rearIdfNum = ("000000" + rearNumber).slice(-6);
-    const idfNum = `${frontIdfNum}${rearIdfNum}`;
-
+    const idfNum = getIdfNumber(frontNumber, rearNumber);
     const resultData = await getData(page, idfNum);
-    if (!isObjectEmpty(resultData)) {
-      console.log(resultData.idfNum + " - " + resultData.literature);
+    if (isObjectEmpty(resultData)) {
+      timesOverData += 1;
     } else {
-      
+      timesOverData = 0;
     }
-    if (rearNumber === 100) {
-      break;
+
+    if (timesOverData >= maxTimesOverData) {
+      frontNumber += 1;
+      rearNumber = 0;
+      timesOverData = 0;
     }
+
     rearNumber += 1;
   }
 };
@@ -41,13 +60,14 @@ const getData = async (page, idfNum) => {
     { idfNum }
   );
 
-  await page.waitForSelector("#resultcontainer .point");
+  await page.waitForTimeout(timeoutPerReq);
 
   /* wait function run and find elements includes identification number */
   const waitFunc = `document.querySelector("#resultcontainer .point:nth-child(2)")
   .innerText.includes("${idfNum}")`;
   await page
     .waitForFunction(waitFunc, { timeout })
+    .then(() => console.log(idfNum))
     .catch(() => console.log(`${idfNum} not found!`));
 
   const resultData = await page.evaluate(() => {
