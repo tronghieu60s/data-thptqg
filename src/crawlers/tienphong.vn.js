@@ -1,6 +1,6 @@
 const {
   isObjectEmpty,
-  writeObjectDataToJson,
+  writeObjectDataToCsv,
 } = require("../helpers/commonFunctions");
 const { getIdfNumber } = require("../helpers/crawlersFunctions");
 
@@ -9,7 +9,7 @@ const timeout = 3000; // timeout milliseconds
 const timeoutPerReq = 500;
 const minFrontIdf = 1;
 const maxFrontIdf = 64; // total provinces and cities
-const maxTimesOverData = 5;
+const maxTimesOverData = 10;
 
 const main = async (browser) => {
   const page = await browser.newPage();
@@ -28,6 +28,7 @@ const main = async (browser) => {
     if (isObjectEmpty(resultData)) {
       timesOverData += 1;
 
+      /* increase frontNumber + 1 next cluster */
       if (timesOverData >= maxTimesOverData) {
         frontNumber += 1;
         rearNumber = 0;
@@ -35,8 +36,8 @@ const main = async (browser) => {
       }
     } else {
       timesOverData = 0;
-
-      writeObjectDataToJson("data.json", resultData);
+      // writeObjectDataToJson("DiemThi2021.json", resultData);
+      writeObjectDataToCsv("./data/DiemThi2021.csv", resultData);
     }
 
     rearNumber += 1;
@@ -69,27 +70,29 @@ const getData = async (page, idfNum) => {
       return {};
     }
 
-    const idfNum = result[1].innerText;
-    const math = result[2].innerText;
-    const literature = result[3].innerText;
-    const foreignLang = result[4].innerText;
-    const physics = result[5].innerText;
-    const chemistry = result[6].innerText;
-    const biology = result[7].innerText;
-    const history = result[8].innerText;
-    const geography = result[9].innerText;
-    const civicEdu = result[10].innerText;
+    const SBD = result[1].innerText;
+    const Toan = result[2].innerText;
+    const Ngu_Van = result[3].innerText;
+    const Ngoai_Ngu = result[4].innerText;
+    const Vat_Ly = result[5].innerText;
+    const Hoa_Hoc = result[6].innerText;
+    const Sinh_Hoc = result[7].innerText;
+    const Lich_Su = result[8].innerText;
+    const Dia_Ly = result[9].innerText;
+    const GDCD = result[10].innerText;
+    const Cum_Thi = result[1].innerText.slice(0, 2);
     return {
-      idfNum,
-      math,
-      literature,
-      foreignLang,
-      physics,
-      chemistry,
-      biology,
-      history,
-      geography,
-      civicEdu,
+      SBD,
+      Toan,
+      Ngu_Van,
+      Ngoai_Ngu,
+      Vat_Ly,
+      Hoa_Hoc,
+      Sinh_Hoc,
+      Lich_Su,
+      Dia_Ly,
+      GDCD,
+      Cum_Thi,
     };
   });
 
