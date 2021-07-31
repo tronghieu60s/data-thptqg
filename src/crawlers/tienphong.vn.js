@@ -1,4 +1,7 @@
-const { isObjectEmpty } = require("../helpers/commonFunctions");
+const {
+  isObjectEmpty,
+  writeObjectDataToJson,
+} = require("../helpers/commonFunctions");
 const { getIdfNumber } = require("../helpers/crawlersFunctions");
 
 const crawlerUrl = "https://tienphong.vn/tra-cuu-diem-thi.tpo";
@@ -10,25 +13,13 @@ const maxTimesOverData = 5;
 
 const main = async (browser) => {
   const page = await browser.newPage();
-
-  // // network speed simulator: 
-  // // https://fdalvi.github.io/blog/2018-02-05-puppeteer-network-throttle/
-  // await (
-  //   await page.target().createCDPSession()
-  // ).send("Network.emulateNetworkConditions", {
-  //   offline: false,
-  //   downloadThroughput: (1.5 * 1024 * 1024) / 8,
-  //   uploadThroughput: (750 * 1024) / 8,
-  //   latency: 40,
-  // });
-
   await page.goto(crawlerUrl);
   await page.setViewport({ width: 1366, height: 768 });
 
   /* max rearNumber 101288 when frontNumber = 1 
     => infNum = 01101288 */
   let frontNumber = minFrontIdf,
-    rearNumber = 101250;
+    rearNumber = 1;
   let timesOverData = 0;
 
   while (frontNumber <= maxFrontIdf) {
@@ -36,14 +27,16 @@ const main = async (browser) => {
     const resultData = await getData(page, idfNum);
     if (isObjectEmpty(resultData)) {
       timesOverData += 1;
+
+      if (timesOverData >= maxTimesOverData) {
+        frontNumber += 1;
+        rearNumber = 0;
+        timesOverData = 0;
+      }
     } else {
       timesOverData = 0;
-    }
 
-    if (timesOverData >= maxTimesOverData) {
-      frontNumber += 1;
-      rearNumber = 0;
-      timesOverData = 0;
+      writeObjectDataToJson("data.json", resultData);
     }
 
     rearNumber += 1;
