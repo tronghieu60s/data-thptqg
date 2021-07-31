@@ -1,4 +1,5 @@
 const fs = require("fs");
+const ObjectsToCsv = require("objects-to-csv");
 
 function isObjectEmpty(obj) {
   return Object.keys(obj).length === 0;
@@ -13,15 +14,22 @@ function writeObjectDataToJson(filePath, objectData) {
   let fileData = [];
   try {
     fileData = JSON.parse(fs.readFileSync(filePath));
-  } catch (error) {
-    console.log("No such file, creating new file...");
+  } catch (err) {
+    console.error(`${err}`);
+    console.log("Creating new file...");
   }
   fileData.push(objectData);
   fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2));
+}
+
+function writeObjectDataToCsv(filePath, objectData) {
+  const csv = new ObjectsToCsv([objectData]);
+  return csv.toDisk(filePath, { append: true });
 }
 
 module.exports = {
   isObjectEmpty,
   randomIntFromInterval,
   writeObjectDataToJson,
+  writeObjectDataToCsv,
 };
