@@ -14,10 +14,7 @@ function writeObjectDataToJson(filePath, objectData) {
   let fileData = [];
   try {
     fileData = JSON.parse(fs.readFileSync(filePath));
-  } catch (err) {
-    console.error(`${err}`);
-    console.log("Creating new file...");
-  }
+  } catch (err) {}
   fileData.push(objectData);
   fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2));
 }

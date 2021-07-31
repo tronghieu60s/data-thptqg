@@ -1,16 +1,24 @@
+const fs = require("fs");
 const puppeteer = require("puppeteer");
 const tienPhong = require("./src/crawlers/tienphong.vn");
-
-const browserConfig = {
-  headless: false,
-  args: ["--start-maximized"],
-  // devtools: true,
-};
+const questionsToStart = require("./src/helpers/questionsToStart");
 
 (async () => {
-  const browser = await puppeteer.launch(browserConfig);
+  const options = await questionsToStart();
 
-  await tienPhong(browser);
+  /* create folder if not exists */
+  const dirName = "data";
+  if (!fs.existsSync(dirName)) {
+    fs.mkdirSync(dirName);
+  }
 
-  await browser.close();
+  if (options) {
+    const browser = await puppeteer.launch({
+      headless: options.headless,
+      args: ["--start-maximized"],
+      // devtools: true,
+    });
+    await tienPhong(browser, options);
+    await browser.close();
+  }
 })();

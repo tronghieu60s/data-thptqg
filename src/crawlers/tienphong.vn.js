@@ -1,8 +1,8 @@
+const { isObjectEmpty } = require("../helpers/commonFunctions");
 const {
-  isObjectEmpty,
-  writeObjectDataToCsv,
-} = require("../helpers/commonFunctions");
-const { getIdfNumber } = require("../helpers/crawlersFunctions");
+  getIdfNumber,
+  writeDataToFile,
+} = require("../helpers/crawlersFunctions");
 
 const crawlerUrl = "https://tienphong.vn/tra-cuu-diem-thi.tpo";
 const timeout = 3000; // timeout milliseconds
@@ -11,7 +11,9 @@ const minFrontIdf = 1;
 const maxFrontIdf = 64; // total provinces and cities
 const maxTimesOverData = 10;
 
-const main = async (browser) => {
+const main = async (browser, options) => {
+  const { typeExport } = options;
+
   const page = await browser.newPage();
   await page.goto(crawlerUrl);
   await page.setViewport({ width: 1366, height: 768 });
@@ -36,12 +38,13 @@ const main = async (browser) => {
       }
     } else {
       timesOverData = 0;
-      // writeObjectDataToJson("DiemThi2021.json", resultData);
-      writeObjectDataToCsv("./data/DiemThi2021.csv", resultData);
+      writeDataToFile(typeExport, resultData);
     }
 
     rearNumber += 1;
   }
+
+  console.log("Hoàn tất, vui lòng kiểm tra thư mục data.");
 };
 
 const getData = async (page, idfNum) => {
@@ -61,8 +64,8 @@ const getData = async (page, idfNum) => {
   .innerText.includes("${idfNum}")`;
   await page
     .waitForFunction(waitFunc, { timeout })
-    .then(() => console.log(idfNum))
-    .catch(() => console.log(`${idfNum} not found!`));
+    .then(() => console.log(`SBD: ${idfNum}`))
+    .catch(() => console.log(`SBD: ${idfNum} not found!`));
 
   const resultData = await page.evaluate(() => {
     const result = document.querySelectorAll("#resultcontainer .point");
