@@ -11,26 +11,34 @@ const minFrontIdf = 1;
 const maxFrontIdf = 64; // total provinces and cities
 
 const main = async (browser, options) => {
-  const { type_export } = options;
+  const { type_crawler, type_export } = options;
   let frontNumber = minFrontIdf,
     rearNumber = 0;
 
   const page = await browser.newPage();
-  await page.goto(crawlerUrl);
   await page.setViewport({ width: 1366, height: 768 });
+  await page.goto(crawlerUrl);
 
   while (frontNumber <= maxFrontIdf) {
     const idfNum = getIdfNumber(frontNumber, rearNumber);
-    const resultData = await getData(page, idfNum);
+
+    let resultData = [];
+    if (type_crawler === "stable_tienphong") {
+      resultData = await getData(page, idfNum);
+    } else if (type_crawler === "perform_tienphong") {
+      resultData = await getDataPerform(page, idfNum);
+    }
 
     /* reset rearNumber and 
     increase frontNumber + 1 */
     if (resultData.length === 0) {
       frontNumber += 1;
       rearNumber = 0;
+      console.log(`${idfNum}00 - ${idfNum}99 not found!`);
       continue;
     }
 
+    console.log(`${idfNum}00 - ${idfNum}99`);
     rearNumber += 1;
     writeDataToFile(type_export, resultData);
   }
@@ -38,7 +46,48 @@ const main = async (browser, options) => {
   console.log("Hoàn tất, vui lòng kiểm tra thư mục data.");
 };
 
-const getData = async (page, idfNum) => {
+const getData = (page, idfNum) => {
+  return page.evaluate(
+    async (args) => {
+      const { idfNum } = args;
+
+      /* fetch data and convert to html */
+      const fetchUrl = `https://tienphong.vn/api/diemthi/get/result?type=0&keyword=${idfNum}&kythi=THPT&nam=2021&cumthi=0`;
+      const fetchData = await fetch(fetchUrl).then((res) => res.json());
+      const domElements = new DOMParser().parseFromString(
+        `<div>${fetchData.data.results}</div>`,
+        "text/xml"
+      );
+
+      const result = domElements.querySelectorAll("div tr");
+      if (result.length === 0) return [];
+
+      const arrData = [];
+      /* the data is sorted backwards, the loop must be run backwards */
+      for (let index = result.length - 1; index >= 0; index -= 1) {
+        const children = result[index].children;
+        arrData.push({
+          SBD: children[1].innerHTML,
+          Toan: children[2].innerHTML,
+          Ngu_Van: children[3].innerHTML,
+          Ngoai_Ngu: children[4].innerHTML,
+          Vat_Ly: children[5].innerHTML,
+          Hoa_Hoc: children[6].innerHTML,
+          Sinh_Hoc: children[7].innerHTML,
+          Lich_Su: children[8].innerHTML,
+          Dia_Ly: children[9].innerHTML,
+          GDCD: children[10].innerHTML,
+          Cum_Thi: children[1].innerHTML.slice(0, 2),
+        });
+      }
+
+      return arrData;
+    },
+    { idfNum }
+  );
+};
+
+const getDataPerform = async (page, idfNum) => {
   /* when this function run will pass data to input 
   and click button load data */
   await page.evaluate(
@@ -55,8 +104,7 @@ const getData = async (page, idfNum) => {
   .innerText.includes("${idfNum}")`;
   await page
     .waitForFunction(waitFunc, { timeout })
-    .then(() => console.log(`${idfNum}00 - ${idfNum}99`))
-    .catch(() => console.log(`${idfNum}00 - ${idfNum}99 not found!`));
+    .catch(() => console.log(`Next!`));
 
   const resultData = await page.evaluate(() => {
     const result = document.querySelectorAll("#resultcontainer tr");

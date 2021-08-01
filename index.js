@@ -5,6 +5,7 @@ const questionsToStart = require("./src/helpers/questionsToStart");
 
 (async () => {
   const options = await questionsToStart();
+  const { type_crawler } = options;
 
   /* create folder if not exists */
   const dirName = "data";
@@ -12,13 +13,16 @@ const questionsToStart = require("./src/helpers/questionsToStart");
     fs.mkdirSync(dirName);
   }
 
-  if (options) {
-    const browser = await puppeteer.launch({
-      headless: options.headless,
-      args: ["--start-maximized"],
-      // devtools: true,
-    });
+  const headless = type_crawler.indexOf("perform") === -1;
+  const browser = await puppeteer.launch({
+    headless,
+    args: ["--start-maximized"],
+    // devtools: true,
+  });
+
+  if (type_crawler.indexOf("tienphong") > -1) {
     await tienPhong(browser, options);
-    await browser.close();
   }
+
+  await browser.close();
 })();

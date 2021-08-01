@@ -2,19 +2,38 @@ const inquirer = require("inquirer");
 
 const mainQuestions = [
   {
-    type: "confirm",
-    name: "headless",
-    message: "Bạn có muốn chạy crawler trong chế độ ẩn không?",
-    default: true,
+    type: "list",
+    name: "type_crawler",
+    message: "Vui lòng chọn một loại thu thập dữ liệu.",
+    choices: [
+      {
+        name: "Stable tienphong.vn (nhanh, ổn định)",
+        value: "stable_tienphong",
+      },
+      {
+        name: "Perform tienphong.vn (chậm, trình diễn)",
+        value: "perform_tienphong",
+      },
+    ],
   },
   {
     type: "list",
     name: "type_export",
-    message: "Vui lòng chọn kiểu dữ liệu cần xuất.",
-    choices: ["File JSON", "File CSV"],
-    filter(val) {
-      return val.toLowerCase();
-    },
+    message: "Vui lòng chọn định dạng dữ liệu cần xuất.",
+    choices: [
+      {
+        name: "JSON (định dạng json)",
+        value: "json",
+      },
+      {
+        name: "CSV (định dạng csv)",
+        value: "csv",
+      },
+      {
+        name: "Xuất tất cả định dạng",
+        value: "all",
+      },
+    ],
   },
 ];
 
