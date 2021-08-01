@@ -13,7 +13,7 @@ const maxFrontIdf = 64; // total provinces and cities
 const main = async (browser, options) => {
   const { type_export } = options;
   let frontNumber = minFrontIdf,
-    rearNumber = 1;
+    rearNumber = 0;
 
   const page = await browser.newPage();
   await page.goto(crawlerUrl);
