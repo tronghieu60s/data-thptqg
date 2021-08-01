@@ -74,7 +74,8 @@ const getData = (page, idfNum) => {
         });
       }
 
-      return arrData;
+      /* sort data before return */
+      return arrData.sort((a, b) => parseFloat(a.SBD) - parseFloat(b.SBD));
     },
     { idfNum }
   );
