@@ -9,7 +9,7 @@ const mainQuestions = [
   },
   {
     type: "list",
-    name: "typeExport",
+    name: "type_export",
     message: "Vui lòng chọn kiểu dữ liệu cần xuất.",
     choices: ["File JSON", "File CSV"],
     filter(val) {
