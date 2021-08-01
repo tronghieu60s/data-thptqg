@@ -1,7 +1,7 @@
 {
   "name": "data-thptqg",
   "version": "1.0.0",
-  "description": "",
+  "description": "Trình thu thập dữ liệu điểm thi, được thu thập dữ liệu từ các trang web tra cứu điểm.",
   "main": "index.js",
   "scripts": {
     "start": "SET NODE_ENV=production && node index.js",
@@ -13,7 +13,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/tronghieu60s/data-thptqg/issues"
   },
