@@ -14,6 +14,10 @@ const mainQuestions = [
         name: "Perform tienphong.vn (chậm, trình diễn)",
         value: "perform_tienphong",
       },
+      {
+        name: "Stable thanhnien.vn (nhanh, ổn định)",
+        value: "stable_thanhnien",
+      },
     ],
   },
   {

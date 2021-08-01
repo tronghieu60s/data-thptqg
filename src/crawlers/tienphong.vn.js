@@ -5,8 +5,6 @@ const {
 
 /* max rearNumber 1012-88 when frontNumber = 1 => infNum = 011012-88 */
 const crawlerUrl = "https://tienphong.vn/tra-cuu-diem-thi.tpo";
-const timeout = 3000; // timeout milliseconds
-const timeoutPerReq = 500;
 const minFrontIdf = 1;
 const maxFrontIdf = 64; // total provinces and cities
 
@@ -87,6 +85,8 @@ const getData = (page, idfNum) => {
   );
 };
 
+const timeout = 3000; // timeout milliseconds
+const timeoutPerReq = 500;
 const getDataPerform = async (page, idfNum) => {
   /* when this function run will pass data to input 
   and click button load data */
