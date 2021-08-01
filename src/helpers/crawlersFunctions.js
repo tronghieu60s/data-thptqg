@@ -10,13 +10,15 @@ function getIdfNumber(frontNumber, rearNumber) {
 
 function writeDataToFile(typeExport, resultData) {
   switch (typeExport) {
-    case "file json":
+    case "json":
       writeDataToJson("./data/DiemThi2021.json", resultData);
       break;
-    case "file csv":
+    case "csv":
       writeDataToCsv("./data/DiemThi2021.csv", resultData);
       break;
     default:
+      writeDataToJson("./data/DiemThi2021.json", resultData);
+      writeDataToCsv("./data/DiemThi2021.csv", resultData);
       break;
   }
 }
