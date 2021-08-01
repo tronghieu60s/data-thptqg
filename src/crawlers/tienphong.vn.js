@@ -13,13 +13,11 @@ const maxFrontIdf = 64; // total provinces and cities
 const main = async (browser, options) => {
   const { type_export } = options;
   let frontNumber = minFrontIdf,
-    rearNumber = 1010;
+    rearNumber = 1;
 
   const page = await browser.newPage();
   await page.goto(crawlerUrl);
   await page.setViewport({ width: 1366, height: 768 });
-
-  console.time();
 
   while (frontNumber <= maxFrontIdf) {
     const idfNum = getIdfNumber(frontNumber, rearNumber);
@@ -38,7 +36,6 @@ const main = async (browser, options) => {
   }
 
   console.log("Hoàn tất, vui lòng kiểm tra thư mục data.");
-  console.timeEnd();
 };
 
 const getData = async (page, idfNum) => {
