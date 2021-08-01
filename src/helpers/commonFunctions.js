@@ -10,23 +10,34 @@ function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function writeObjectDataToJson(filePath, objectData) {
+function writeDataToJson(filePath, data) {
   let fileData = [];
   try {
     fileData = JSON.parse(fs.readFileSync(filePath));
   } catch (err) {}
-  fileData.push(objectData);
+
+  if (Array.isArray(data)) {
+    fileData.push(...data);
+  } else if (typeof data === "object") {
+    fileData.push(data);
+  }
+
   fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2));
 }
 
-function writeObjectDataToCsv(filePath, objectData) {
-  const csv = new ObjectsToCsv([objectData]);
+function writeDataToCsv(filePath, data) {
+  let csv = new ObjectsToCsv([]);
+  if (Array.isArray(data)) {
+    csv = new ObjectsToCsv([...data]);
+  } else if (typeof data === "object") {
+    csv = new ObjectsToCsv([data]);
+  }
   return csv.toDisk(filePath, { append: true });
 }
 
 module.exports = {
   isObjectEmpty,
   randomIntFromInterval,
-  writeObjectDataToJson,
-  writeObjectDataToCsv,
+  writeDataToJson,
+  writeDataToCsv,
 };
