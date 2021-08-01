@@ -4,9 +4,7 @@
 ![code-size](https://img.shields.io/github/languages/code-size/tronghieu60s/data-thptqg)
 ![license](https://img.shields.io/github/license/tronghieu60s/data-thptqg)
 
-Kỳ thi trung học phổ thông quốc gia tại Việt Nam là một sự kiện của ngành Giáo dục Việt Nam, được bắt đầu tổ chức vào năm 2015.
-
-Đây là trình thu thập dữ liệu điểm thi năm 2021 được thu thập dữ liệu từ các trang web tra cứu điểm.
+Đây là trình thu thập dữ liệu điểm thi năm 2021 được thu thập từ các trang web tra cứu điểm.
 
 
 ## Nguồn Dữ Liệu Thu Thập
@@ -18,9 +16,9 @@ Kỳ thi trung học phổ thông quốc gia tại Việt Nam là một sự ki�
 
 ## Yêu Cầu
 
-1. Cài đặt môi trường NodeJS `v14.17.3` hoặc cao hơn. Nếu chưa cài đặt bạn có thể cài nó [ở đây](https://nodejs.org/en/).
+1. Cài đặt môi trường NodeJS phiên bản `v14.17.3` hoặc cao hơn. Nếu chưa cài đặt bạn có thể cài nó [ở đây](https://nodejs.org/en/).
 
-2. Mình khuyên bạn nên sử dụng `yarn` cho dự án này để tránh xung đột. Để tiếp tục cài `yarn` hãy gõ câu gõ câu lệnh sau:
+2. Mình khuyên bạn nên sử dụng `yarn` cho dự án này để tránh xung đột. Để tiếp tục cài `yarn` hãy sử dụng câu lệnh sau:
 
 ```
 $ npm install -g yarn
@@ -31,7 +29,7 @@ $ npm install -g yarn
 
 Clone hoặc tải dự án về.
 
-Mở terminal / command line và chạy các câu lệnh sau.
+Mở Terminal / Command Line và thực hiện những bước sau đây.
 
 1. Di chuyển vào thư mục dự án và cài đặt:
 
