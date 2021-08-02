@@ -4,16 +4,6 @@ const tienPhong = require("./src/crawlers/tienphong.vn");
 const thanhNien = require("./src/crawlers/thanhnien.vn");
 const questionsToStart = require("./src/helpers/questionsToStart");
 
-function isBrowserHeadless(type_crawler) {
-  let headless = true;
-  if (process.env.NODE_ENV.trim() === "development") {
-    headless = false;
-  } else if (type_crawler.indexOf("perform") > -1) {
-    headless = false;
-  }
-  return headless;
-}
-
 (async () => {
   const options = await questionsToStart();
   const { type_crawler } = options;
@@ -24,8 +14,16 @@ function isBrowserHeadless(type_crawler) {
     fs.mkdirSync(dirName);
   }
 
+  /* headless config */
+  let headless = true;
+  if (process.env.NODE_ENV.trim() === "development") {
+    headless = false;
+  } else if (type_crawler.indexOf("perform") > -1) {
+    headless = false;
+  }
+
   const browser = await puppeteer.launch({
-    headless: isBrowserHeadless(type_crawler),
+    headless,
     args: ["--start-maximized"],
     // devtools: true,
   });
