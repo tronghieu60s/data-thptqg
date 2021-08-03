@@ -18,17 +18,6 @@ const main = async (browser, options) => {
   await page.setViewport({ width: 1366, height: 768 });
   await page.goto(crawlerUrl);
 
-  /* check block IP */
-  const textContent = await page.evaluate(
-    () => document.querySelector("h1").textContent
-  );
-  if (textContent === "403 Forbidden") {
-    const text =
-      "\nKhông thể truy cập trang web. Có thể bạn đã bị chặn IP =((.\nVui lòng truy cập https://thanhnien.vn/ để kiểm tra.\n";
-    console.log(text);
-    return;
-  }
-
   while (frontNumber <= maxFrontIdf) {
     const idfNum = getIdfNumber(frontNumber, rearNumber);
     const resultData = await getData(page, idfNum);
@@ -50,7 +39,7 @@ const main = async (browser, options) => {
   console.log("Hoàn tất, vui lòng kiểm tra thư mục data.");
 };
 
-const getData = async (page, idfNum) => {
+const getData = (page, idfNum) => {
   return page.evaluate(
     async (args) => {
       const { idfNum } = args;

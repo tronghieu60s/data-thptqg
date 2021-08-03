@@ -48,6 +48,12 @@ $ yarn start
 
 ⚠️ Xuất dữ liệu kiểu **JSON** có thể bị chậm do không được tối ưu.
 
+
+## Kết Quả
+
+[Google Drive](https://drive.google.com/drive/folders/1HgiDVV7uX9Pt09zWK4K-9GgasIIEsdAb?usp=sharing)
+
+
 ## License
 
 [MIT](https://github.com/tronghieu60s/data-thptqg/blob/master/LICENSE)
